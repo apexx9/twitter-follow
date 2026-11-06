@@ -4,6 +4,7 @@
   "private": true,
   "description": "A lightweight terminal-based account discovery and networking assistant.",
   "type": "module",
+  "packageManager": "pnpm@10.0.0",
   "engines": { "node": ">=20" },
   "scripts": {
     "start": "node src/cli.js",
