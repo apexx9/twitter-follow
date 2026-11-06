@@ -3,6 +3,14 @@ import { db } from "./db.js";
 import { scoreAccount } from "./scoring.js";
 
 const allowedCountries = new Set(["Ghana", "Nigeria", "Other Africa", "International", "Unknown"]);
+const allowedSegments = new Set([
+  "ghanaian_women",
+  "nigerian_women",
+  "international_women",
+  "ghanaian_men",
+  "tech",
+  "other"
+]);
 
 export function importAccounts(filePath) {
   const parsed = JSON.parse(readFileSync(filePath, "utf8"));
@@ -10,15 +18,16 @@ export function importAccounts(filePath) {
 
   const insert = db.prepare(`
     INSERT INTO accounts
-      (username, profile_url, display_name, country, followers, following,
+      (username, profile_url, display_name, country, segment, followers, following,
        posts_7d, replies_7d, likes_7d, bio, tags, score, source)
     VALUES
-      (@username, @profile_url, @display_name, @country, @followers, @following,
+      (@username, @profile_url, @display_name, @country, @segment, @followers, @following,
        @posts_7d, @replies_7d, @likes_7d, @bio, @tags, @score, @source)
     ON CONFLICT(username) DO UPDATE SET
       profile_url=excluded.profile_url,
       display_name=excluded.display_name,
       country=excluded.country,
+      segment=excluded.segment,
       followers=excluded.followers,
       following=excluded.following,
       posts_7d=excluded.posts_7d,
@@ -37,11 +46,13 @@ export function importAccounts(filePath) {
       if (!/^[A-Za-z0-9_]{1,15}$/.test(username)) continue;
 
       const country = allowedCountries.has(row.country) ? row.country : "Unknown";
+      const segment = allowedSegments.has(row.segment) ? row.segment : "other";
       const account = {
         username,
         profile_url: `https://x.com/${username}`,
         display_name: String(row.display_name || "").slice(0, 100),
         country,
+        segment,
         followers: Math.max(0, Number(row.followers) || 0),
         following: Math.max(0, Number(row.following) || 0),
         posts_7d: Math.max(0, Number(row.posts_7d) || 0),
