@@ -1,0 +1,64 @@
+import { readFileSync } from "node:fs";
+import { db } from "./db.js";
+import { scoreAccount } from "./scoring.js";
+
+const allowedCountries = new Set(["Ghana", "Nigeria", "Other Africa", "International", "Unknown"]);
+
+export function importAccounts(filePath) {
+  const parsed = JSON.parse(readFileSync(filePath, "utf8"));
+  if (!Array.isArray(parsed)) throw new Error("Import file must contain a JSON array.");
+
+  const insert = db.prepare(`
+    INSERT INTO accounts
+      (username, profile_url, display_name, country, followers, following,
+       posts_7d, replies_7d, likes_7d, bio, tags, score, source)
+    VALUES
+      (@username, @profile_url, @display_name, @country, @followers, @following,
+       @posts_7d, @replies_7d, @likes_7d, @bio, @tags, @score, @source)
+    ON CONFLICT(username) DO UPDATE SET
+      profile_url=excluded.profile_url,
+      display_name=excluded.display_name,
+      country=excluded.country,
+      followers=excluded.followers,
+      following=excluded.following,
+      posts_7d=excluded.posts_7d,
+      replies_7d=excluded.replies_7d,
+      likes_7d=excluded.likes_7d,
+      bio=excluded.bio,
+      tags=excluded.tags,
+      score=excluded.score,
+      updated_at=CURRENT_TIMESTAMP
+  `);
+
+  let imported = 0;
+  const run = db.transaction((rows) => {
+    for (const row of rows) {
+      const username = String(row.username || "").replace(/^@/, "").trim();
+      if (!/^[A-Za-z0-9_]{1,15}$/.test(username)) continue;
+
+      const country = allowedCountries.has(row.country) ? row.country : "Unknown";
+      const account = {
+        username,
+        profile_url: `https://x.com/${username}`,
+        display_name: String(row.display_name || "").slice(0, 100),
+        country,
+        followers: Math.max(0, Number(row.followers) || 0),
+        following: Math.max(0, Number(row.following) || 0),
+        posts_7d: Math.max(0, Number(row.posts_7d) || 0),
+        replies_7d: Math.max(0, Number(row.replies_7d) || 0),
+        likes_7d: Math.max(0, Number(row.likes_7d) || 0),
+        bio: String(row.bio || "").slice(0, 500),
+        tags: Array.isArray(row.tags) ? row.tags.join(",") : String(row.tags || ""),
+        source: String(row.source || "manual-import")
+      };
+
+      if (account.followers < 100 || account.followers > 2000) continue;
+      account.score = scoreAccount(account);
+      insert.run(account);
+      imported++;
+    }
+  });
+
+  run(parsed);
+  return imported;
+}
