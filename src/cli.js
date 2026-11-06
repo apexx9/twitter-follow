@@ -31,9 +31,10 @@ Account review:
   node src/cli.js mark <username> <reviewed|followed|skipped>
   node src/cli.js open <username>
 
-Segments:
-  ghanaian_women, nigerian_women, international_women,
-  ghanaian_men, tech, other
+Search groups:
+  ghana_conversations, ghana_creative, ghana_sports_music,
+  ghana_students_builders, nigeria_communities,
+  african_technology, wider_interests
 
 Discovery opens public X search pages. You review profiles and add candidates;
 GhanaConnect does not scrape X or automate follows.
