@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { db, closeDb } from "./db.js";
 import { importAccounts } from "./import.js";
+import { config } from "../config.js";
 
 const args = process.argv.slice(2);
 const command = args[0] || "help";
@@ -22,14 +23,13 @@ Account review:
   node src/cli.js mark <username> <reviewed|followed|skipped>
   node src/cli.js open <username>
 
-Note: discovery providers are not configured in this first version.
-Import only data collected through permitted sources.
+Discovery uses permitted sources only. Following is always manual.
 `);
 }
 
 function recommendations() {
   const rows = db.prepare(`
-    SELECT username, display_name, country, followers, posts_7d,
+    SELECT username, display_name, country, segment, followers, posts_7d,
            replies_7d, score, status
     FROM accounts
     WHERE status = 'new'
@@ -45,7 +45,7 @@ function recommendations() {
   console.log("\nTOP ACCOUNT RECOMMENDATIONS\n");
   for (const [i, row] of rows.entries()) {
     console.log(
-      `${String(i + 1).padStart(2, "0")}. @${row.username} — ${row.country}\n` +
+      `${String(i + 1).padStart(2, "0")}. @${row.username} — ${row.country} / ${row.segment}\n` +
       `    ${row.display_name || "No display name"} | ${row.followers} followers | ${row.posts_7d} posts/7d | ${row.replies_7d} replies/7d | score ${row.score}/100\n` +
       `    https://x.com/${row.username}\n`
     );
@@ -56,6 +56,7 @@ function stats() {
   const total = db.prepare("SELECT COUNT(*) AS n FROM accounts").get().n;
   const statuses = db.prepare("SELECT status, COUNT(*) AS n FROM accounts GROUP BY status").all();
   const countries = db.prepare("SELECT country, COUNT(*) AS n FROM accounts GROUP BY country ORDER BY n DESC").all();
+  const segments = db.prepare("SELECT segment, COUNT(*) AS n FROM accounts GROUP BY segment ORDER BY n DESC").all();
 
   console.log("\nGHANACONNECT STATS");
   console.log(`Total accounts: ${total}`);
@@ -63,6 +64,12 @@ function stats() {
   for (const row of statuses) console.log(`  ${row.status}: ${row.n}`);
   console.log("\nBy location:");
   for (const row of countries) console.log(`  ${row.country}: ${row.n}`);
+  console.log("\nBy audience segment:");
+  for (const row of segments) console.log(`  ${row.segment}: ${row.n}`);
+  console.log("\nConfigured audience targets:");
+  for (const [segment, percentage] of Object.entries(config.audienceTargets)) {
+    console.log(`  ${segment}: ${percentage}%`);
+  }
 }
 
 function mark(username, status) {
@@ -72,7 +79,7 @@ function mark(username, status) {
   const result = db.prepare(
     "UPDATE accounts SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE username = ? COLLATE NOCASE"
   ).run(status, username.replace(/^@/, ""));
-  console.log(result.changes ? `@ ${username} marked ${status}.` : `Account @${username} was not found.`);
+  console.log(result.changes ? `@${username} marked ${status}.` : `Account @${username} was not found.`);
 }
 
 function openProfile(username) {
@@ -93,8 +100,8 @@ try {
       break;
     case "discover":
       console.log("Discovery provider: not configured.");
-      console.log("This MVP does not scrape X or automate follows.");
-      console.log("Import candidates from a permitted data source with: npm run import -- ./accounts.json");
+      console.log("No scraping or automated follow actions are performed.");
+      console.log("Import candidates from a permitted source: npm run import -- ./accounts.json");
       break;
     case "recommendations":
       recommendations();
