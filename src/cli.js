@@ -130,7 +130,7 @@ function recommendations() {
   for (const [i, row] of rows.entries()) {
     console.log(
       `${String(i + 1).padStart(2, "0")}. @${row.username} — ${row.country} / ${row.segment}\n` +
-      `    ${row.display_name || "No display name"} | ${row.followers} followers | ${row.posts_7d} posts/7d | ${row.replies_7d} replies/7d | score ${row.score}/100\n` +
+      `    ${row.display_name || "No display name"} | ${row.followers} followers | ${row.posts_7d ?? "not recorded"} posts/7d | ${row.replies_7d ?? "not recorded"} replies/7d | profile score ${row.score}/100\n` +
       `    https://x.com/${row.username}\n`
     );
   }
