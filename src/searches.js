@@ -9,37 +9,41 @@ export const segments = {
   other: { label: "Wider African and international conversations" }
 };
 
+// Initial interest signals derived from the user's supplied following-list sample.
+// These are discovery themes, not assumptions about any account's identity.
 const searches = {
   ghanaian_women: [
-    ["Ghana conversations", '(Ghana OR Ghanaian OR Accra) (conversation OR thoughts OR life) -filter:replies'],
-    ["Ghana lifestyle", '(Ghana OR Accra) (lifestyle OR fashion OR music OR culture)'],
-    ["Accra community", '"Accra" (community OR meetup OR events OR friends)']
+    ["Ghanaian everyday conversations", '(Ghana OR Ghanaian OR Accra) (thoughts OR "random thoughts" OR "just saying" OR relatable)'],
+    ["Ghana lifestyle and creativity", '(Ghana OR Accra) (fashion OR sewist OR artist OR books OR music OR lifestyle)'],
+    ["Ghana conversations in replies", '(Ghana OR Ghanaian OR Accra) filter:replies']
   ],
   nigerian_women: [
-    ["Nigeria conversations", '(Nigeria OR Nigerian OR Lagos) (conversation OR lifestyle OR culture)'],
-    ["Nigerian community", '(Lagos OR Abuja OR Port Harcourt) (community OR everyday OR thoughts)']
+    ["Nigerian everyday conversations", '(Nigeria OR Nigerian OR Lagos OR Abuja) (thoughts OR lifestyle OR culture OR relatable)'],
+    ["Nigerian creative communities", '(Nigeria OR Nigerian OR Lagos) (artist OR writing OR fashion OR books OR music)'],
+    ["Nigerian conversations in replies", '(Nigeria OR Nigerian OR Lagos) filter:replies']
   ],
   international_women: [
-    ["International lifestyle", '(lifestyle OR books OR music OR travel) (conversation OR thoughts)'],
-    ["Creative communities", '(creative OR writing OR art OR culture) (community OR conversations)']
+    ["Lifestyle and personal interests", '(books OR music OR travel OR fashion OR art OR lifestyle) (thoughts OR opinions OR community)'],
+    ["Creative voices", '(artist OR writer OR sewist OR designer OR photography) (thoughts OR work OR community)']
   ],
   ghanaian_men: [
-    ["Ghana conversations", '(Ghana OR Ghanaian OR Accra) (football OR music OR culture OR everyday)'],
-    ["Accra interests", '"Accra" (sports OR music OR business OR community)']
+    ["Ghanaian social conversations", '(Ghana OR Ghanaian OR Accra) (football OR music OR culture OR thoughts OR relatable)'],
+    ["Ghana sports and music", '(Ghana OR Accra) (Chelsea OR "Man United" OR "Real Madrid" OR football OR music)'],
+    ["Ghana conversations in replies", '(Ghana OR Ghanaian OR Accra) filter:replies']
   ],
   tech: [
-    ["Ghana tech", '(Ghana OR Accra) (software OR developer OR technology OR startup)'],
-    ["African tech", '(Africa OR African) (developer OR robotics OR engineering OR programming)']
+    ["Ghana builders and technology", '(Ghana OR Accra) (developer OR software OR startup OR product OR engineering)'],
+    ["African tech and robotics", '(Africa OR African) (developer OR robotics OR engineering OR programming OR product)']
   ],
   other: [
-    ["African conversations", '(Africa OR African) (culture OR music OR community OR lifestyle)'],
-    ["Global interests", '(books OR music OR film OR running OR photography) (community OR conversation)']
+    ["African culture and conversations", '(Africa OR African) (culture OR music OR books OR lifestyle OR thoughts)'],
+    ["Shared interests and communities", '(books OR music OR film OR running OR photography OR football) (opinions OR community OR conversation)']
   ]
 };
 
 export function getSearches(segment) {
   return (searches[segment] || []).map(([label, terms]) => ({
     label,
-    url: query(`${terms} lang:en`)
+    url: query(terms)
   }));
 }
