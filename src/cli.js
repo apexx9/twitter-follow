@@ -19,7 +19,7 @@ GhanaConnect — terminal account discovery assistant
 Commands:
   pnpm start                              Show help
   pnpm discover [segment]                 Generate targeted X search links
-  pnpm add                                 Add an account interactively
+  pnpm run add                                 Add an account interactively
   pnpm run import -- ./accounts.json      Import candidate accounts
   pnpm recommendations                    Show top recommendations
   pnpm stats                              Show local database statistics
@@ -50,7 +50,7 @@ function discover(segment) {
       console.log(`\n${search.label}\n${search.url}`);
     }
   }
-  console.log("\nOpen a search link, inspect profiles yourself, then run pnpm add to save a candidate.");
+  console.log("\nOpen a search link, inspect profiles yourself, then run pnpm run add to save a candidate.");
 }
 
 async function addAccount() {
