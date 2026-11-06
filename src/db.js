@@ -30,6 +30,15 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
+  CREATE TABLE IF NOT EXISTS seed_accounts (
+    username TEXT PRIMARY KEY COLLATE NOCASE,
+    display_name TEXT DEFAULT '',
+    followers INTEGER DEFAULT 0,
+    bio TEXT DEFAULT '',
+    interests TEXT DEFAULT '',
+    source TEXT DEFAULT 'user-provided',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
   CREATE INDEX IF NOT EXISTS idx_accounts_status ON accounts(status);
   CREATE INDEX IF NOT EXISTS idx_accounts_score ON accounts(score DESC);
 `);
