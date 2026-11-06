@@ -13,16 +13,16 @@ No server, frontend, AI API, browser-cookie access, scraping, or automated follo
 ## Setup
 
 ```bash
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 
 ## Commands
 
 ```bash
-npm run import -- ./accounts.json
-npm run recommendations
-npm run stats
+pnpm import -- ./accounts.json
+pnpm recommendations
+pnpm stats
 node src/cli.js mark username reviewed
 node src/cli.js mark username followed
 node src/cli.js mark username skipped
