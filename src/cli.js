@@ -153,8 +153,8 @@ function stats() {
   for (const row of countries) console.log(`  ${row.country}: ${row.n}`);
   console.log("\nBy audience segment:");
   for (const row of segmentRows) console.log(`  ${row.segment}: ${row.n}`);
-  console.log("\nConfigured audience targets:");
-  for (const [segment, percentage] of Object.entries(config.audienceTargets)) {
+  console.log("\nDiscovery focus mix:");
+  for (const [segment, percentage] of Object.entries(config.discoveryFocus)) {
     console.log(`  ${segment}: ${percentage}%`);
   }
 }
