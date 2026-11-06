@@ -24,6 +24,8 @@ pnpm start
 pnpm discover
 pnpm discover ghanaian_women
 pnpm run add
+pnpm run seed-import -- ./seed-accounts.json
+pnpm run seed-summary
 pnpm recommendations
 pnpm stats
 pnpm run import -- ./accounts.json
@@ -83,3 +85,17 @@ Allowed segments: `ghanaian_women`, `nigerian_women`, `international_women`, `gh
 ## Scope
 
 GhanaConnect helps discover search topics, organise candidate accounts, rank supplied information, open profiles, and record review status. Following is always manual.
+
+
+## Personalised seed network
+
+Export your own following-list sample into a local `seed-accounts.json` file. Keep this file private and do not commit it to the public repository.
+
+Run:
+
+```bash
+pnpm run seed-import -- ./seed-accounts.json
+pnpm run seed-summary
+```
+
+The seed summary extracts broad interest themes from the bios you provide and creates a targeted Ghana X search link. It does not infer age or gender, and it does not scrape X.
