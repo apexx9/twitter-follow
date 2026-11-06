@@ -16,6 +16,7 @@ db.exec(`
     profile_url TEXT NOT NULL,
     display_name TEXT DEFAULT '',
     country TEXT DEFAULT 'Unknown',
+    segment TEXT DEFAULT 'other',
     followers INTEGER DEFAULT 0,
     following INTEGER DEFAULT 0,
     posts_7d INTEGER DEFAULT 0,
@@ -32,6 +33,11 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_accounts_status ON accounts(status);
   CREATE INDEX IF NOT EXISTS idx_accounts_score ON accounts(score DESC);
 `);
+
+const columns = db.prepare("PRAGMA table_info(accounts)").all().map((column) => column.name);
+if (!columns.includes("segment")) {
+  db.exec("ALTER TABLE accounts ADD COLUMN segment TEXT DEFAULT 'other'");
+}
 
 export function closeDb() {
   db.close();
