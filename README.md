@@ -1,16 +1,16 @@
 # GhanaConnect
 
-A deliberately small, terminal-based account discovery and networking assistant for X.
+A small terminal-based account discovery and networking assistant for X.
 
 ## Stack
 
-- Node.js (ES modules)
-- SQLite via better-sqlite3
-- No web server, frontend, AI API, or automated follow actions
+- Node.js 20+
+- JavaScript ES modules
+- SQLite
+
+No server, frontend, AI API, browser-cookie access, scraping, or automated follows.
 
 ## Setup
-
-Requires Node.js 20 or newer.
 
 ```bash
 npm install
@@ -29,6 +29,12 @@ node src/cli.js mark username skipped
 node src/cli.js open username
 ```
 
+## Audience targets
+
+The default planning mix is 30% Ghanaian women, 10% Nigerian women, 10% international women, 35% Ghanaian men, 10% tech-related accounts, and 5% other relevant accounts.
+
+The segment field is supplied explicitly in the import data; the tool does not infer gender or age from names, photos, or other proxies. Age is not collected.
+
 ## Import format
 
 Create an `accounts.json` file containing an array:
@@ -39,6 +45,7 @@ Create an `accounts.json` file containing an array:
     "username": "example_user",
     "display_name": "Example User",
     "country": "Ghana",
+    "segment": "ghanaian_women",
     "followers": 850,
     "following": 620,
     "posts_7d": 12,
@@ -51,14 +58,16 @@ Create an `accounts.json` file containing an array:
 ]
 ```
 
-Allowed country values: `Ghana`, `Nigeria`, `Other Africa`, `International`, `Unknown`.
+Allowed countries: `Ghana`, `Nigeria`, `Other Africa`, `International`, `Unknown`.
 
-The initial importer accepts accounts with 100–2,000 followers. Engagement scoring uses the supplied recent activity fields; it does not claim to predict who will follow back.
+Allowed segments: `ghanaian_women`, `nigerian_women`, `international_women`, `ghanaian_men`, `tech`, `other`.
+
+The importer accepts accounts with 100–2,000 followers. Engagement scoring uses the supplied recent activity counts; it does not predict follow-backs.
 
 ## Discovery source
 
-The first version intentionally does not scrape X, access account cookies, or automate follows. A discovery adapter can be added when a permitted source is selected. Until then, import candidate data collected through a source whose terms allow the intended use.
+The first version does not scrape X or access account cookies. Import data only from a source whose terms permit this use. A provider adapter can be added once the data source is selected.
 
 ## Scope
 
-This tool ranks and organises candidate accounts and opens profiles for manual review. It does not classify people by inferred gender or age, and it does not perform automated follow actions.
+The tool ranks and organises candidates, opens profiles for manual review, and records your review status. It does not perform automated follow actions.
