@@ -71,6 +71,7 @@ export function seedSearches() {
     lifestyle: '(lifestyle OR curious OR "self improvement")'
   };
   const terms = tags.map(tag => topicTerms[tag]).filter(Boolean);
-  const query = `(Ghana OR Ghanaian OR Accra) ${terms.slice(0,4).join(" OR ")}`;
+  const topicQuery = terms.length ? `(${terms.slice(0, 4).join(" OR ")})` : "(conversation OR creativity OR technology)";
+  const query = `(Ghana OR Ghanaian OR Accra) ${topicQuery}`;
   return `https://x.com/search?q=${encodeURIComponent(query)}&src=typed_query&f=live`;
 }
