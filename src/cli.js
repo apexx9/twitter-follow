@@ -64,40 +64,36 @@ async function addAccount() {
     return value || fallback;
   };
   try {
-    console.log("\nADD AN ACCOUNT");
-    console.log("Enter only information you can verify. Leave unknown metrics blank.");
+    console.log("\nADD A CANDIDATE");
+    console.log("Only enter details visible on the profile. Unknown information can stay blank.");
     const username = (await ask("X username (without @)")).replace(/^@/, "");
     if (!/^[A-Za-z0-9_]{1,15}$/.test(username)) throw new Error("Invalid X username.");
 
     const existing = db.prepare("SELECT username FROM accounts WHERE username = ? COLLATE NOCASE").get(username);
     if (existing) throw new Error(`@${username} is already in your database.`);
 
+    const followersInput = await ask("Followers");
+    const followers = followersInput ? Number(followersInput.replace(/[,\s]/g, "")) : 0;
+    if (!Number.isFinite(followers) || followers < 100 || followers > 2000) {
+      throw new Error("Enter a verified follower count between 100 and 2,000.");
+    }
+
     console.log("\nCountries: Ghana, Nigeria, Other Africa, International, Unknown");
     const country = await ask("Country", "Unknown");
+    if (!["Ghana", "Nigeria", "Other Africa", "International", "Unknown"].includes(country)) {
+      throw new Error("Invalid country value.");
+    }
+
     const segmentKeys = Object.keys(segments);
-    console.log(`Segments: ${segmentKeys.join(", ")}`);
-    const segment = await ask("Segment", "other");
-    const validCountries = ["Ghana", "Nigeria", "Other Africa", "International", "Unknown"];
-    if (!validCountries.includes(country)) throw new Error("Invalid country value.");
-    if (!segments[segment]) throw new Error("Invalid segment value.");
+    console.log(`\nDiscovery groups: ${segmentKeys.join(", ")}`);
+    const segment = await ask("Best matching group", "wider_interests");
+    if (!segments[segment]) throw new Error("Invalid discovery group.");
 
     const display_name = await ask("Display name");
-    const followers = Number(await ask("Followers", "0"));
-    const following = Number(await ask("Following", "0"));
-    const posts_7d = Number(await ask("Posts in last 7 days", "0"));
-    const replies_7d = Number(await ask("Replies in last 7 days", "0"));
-    const likes_7d = Number(await ask("Likes in last 7 days", "0"));
     const bio = await ask("Bio");
-    for (const [label, value] of Object.entries({ followers, following, posts_7d, replies_7d, likes_7d })) {
-      if (!Number.isFinite(value) || value < 0) throw new Error(`${label} must be a non-negative number.`);
-    }
-    if (followers < 100 || followers > 2000) {
-      throw new Error("This project currently accepts accounts with 100–2,000 followers.");
-    }
-
     const account = {
-      username, display_name, country, segment, followers, following,
-      posts_7d, replies_7d, likes_7d, bio
+      username, display_name, country, segment, followers,
+      following: null, posts_7d: null, replies_7d: null, likes_7d: null, bio
     };
     const score = scoreAccount(account);
     db.prepare(`
@@ -108,7 +104,8 @@ async function addAccount() {
         (@username, @profile_url, @display_name, @country, @segment, @followers, @following,
          @posts_7d, @replies_7d, @likes_7d, @bio, '', @score, 'manual-review')
     `).run({ ...account, profile_url: `https://x.com/${username}`, score });
-    console.log(`\nSaved @${username} — score ${score}/100.`);
+    console.log(`\nSaved @${username} — provisional profile score ${score}/100.`);
+    console.log("Activity metrics were left unknown, not assumed to be zero.");
   } finally {
     rl.close();
   }
