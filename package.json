@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node src/cli.js",
     "discover": "node src/cli.js discover",
+    "add": "node src/cli.js add",
     "recommendations": "node src/cli.js recommendations",
     "stats": "node src/cli.js stats",
     "import": "node src/cli.js import"
