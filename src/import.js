@@ -47,7 +47,7 @@ export function importAccounts(filePath) {
       if (!/^[A-Za-z0-9_]{1,15}$/.test(username)) continue;
 
       const country = allowedCountries.has(row.country) ? row.country : "Unknown";
-      const segment = allowedSegments.has(row.segment) ? row.segment : "other";
+      const segment = allowedSegments.has(row.segment) ? row.segment : "wider_interests";
       const account = {
         username,
         profile_url: `https://x.com/${username}`,
