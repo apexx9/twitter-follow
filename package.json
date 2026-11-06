@@ -5,14 +5,18 @@
   "description": "A lightweight terminal-based account discovery and networking assistant.",
   "type": "module",
   "packageManager": "pnpm@10.0.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/cli.js",
     "discover": "node src/cli.js discover",
     "add": "node src/cli.js add",
     "recommendations": "node src/cli.js recommendations",
     "stats": "node src/cli.js stats",
-    "import": "node src/cli.js import"
+    "import": "node src/cli.js import",
+    "seed-import": "node src/cli.js seed-import",
+    "seed-summary": "node src/cli.js seed-summary"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1"
