@@ -40,7 +40,7 @@ node src/cli.js open username
 1. Run `pnpm discover` to print targeted X search links for all discovery groups.
 2. Optionally pass one segment, e.g. `pnpm discover african_technology`.
 3. Open a search link and inspect public profiles manually.
-4. Run `pnpm run add` to save a candidate. Enter only details you can verify; leave unknown metrics at zero.
+4. Run `pnpm run add` to save a candidate. Enter the username, verified follower count, country, discovery group, display name, and bio. Activity metrics are left unknown unless you provide them.
 5. Run `pnpm recommendations` to see the ranked candidate list.
 
 Search results are generated as ordinary X search URLs using interest themes from the initial seed-network review: Ghanaian conversation, creativity, lifestyle, fashion, books, music, sport, and technology. The app does not fetch, scrape, or automatically collect profile data.
@@ -51,7 +51,7 @@ The search groups focus on Ghanaian conversations, creative interests, sports an
 
 ## Account filters and scoring
 
-The importer and interactive add command accept accounts with 100–2,000 followers. Scores use the supplied recent activity counts and profile details; they do not predict follow-backs. Unknown activity should be left at zero rather than guessed.
+The importer and interactive add command accept accounts with 100–2,000 followers. Scores use only information supplied. If recent activity metrics are missing, they are excluded from the score rather than treated as zero. Profile-only scores are provisional and do not predict follow-backs.
 
 ## Import format
 
