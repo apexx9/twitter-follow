@@ -8,6 +8,7 @@ import { importAccounts } from "./import.js";
 import { scoreAccount } from "./scoring.js";
 import { config } from "../config.js";
 import { getSearches, segments } from "./searches.js";
+import { importSeeds, seedSummary, seedSearches } from "./seeds.js";
 
 const args = process.argv.slice(2);
 const command = args[0] || "help";
@@ -19,6 +20,8 @@ GhanaConnect — terminal account discovery assistant
 Commands:
   pnpm start                              Show help
   pnpm discover [segment]                 Generate targeted X search links
+  pnpm run seed-import -- ./seed-accounts.json  Import your private seed list
+  pnpm run seed-summary                   Show interests found in your following
   pnpm run add                                 Add an account interactively
   pnpm run import -- ./accounts.json      Import candidate accounts
   pnpm recommendations                    Show top recommendations
@@ -180,6 +183,19 @@ try {
   switch (command) {
     case "help": printHelp(); break;
     case "discover": discover(args[1]); break;
+    case "seed-import": {
+      const file = args[1];
+      if (!file || !existsSync(resolve(file))) throw new Error("Provide a seed JSON file: pnpm run seed-import -- ./seed-accounts.json");
+      console.log(`Imported or updated ${importSeeds(resolve(file))} seed profiles.`);
+      break;
+    }
+    case "seed-summary": {
+      const rows = seedSummary();
+      console.log("\\nINTERESTS IN YOUR FOLLOWING LIST\\n");
+      for (const [tag, count] of rows) console.log(`  ${tag}: ${count} profiles`);
+      console.log(`\\nPersonalised Ghana search:\\n${seedSearches()}\\n`);
+      break;
+    }
     case "add": await addAccount(); break;
     case "recommendations": recommendations(); break;
     case "stats": stats(); break;
