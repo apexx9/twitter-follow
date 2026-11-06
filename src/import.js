@@ -4,12 +4,13 @@ import { scoreAccount } from "./scoring.js";
 
 const allowedCountries = new Set(["Ghana", "Nigeria", "Other Africa", "International", "Unknown"]);
 const allowedSegments = new Set([
-  "ghanaian_women",
-  "nigerian_women",
-  "international_women",
-  "ghanaian_men",
-  "tech",
-  "other"
+  "ghana_conversations",
+  "ghana_creative",
+  "ghana_sports_music",
+  "ghana_students_builders",
+  "nigeria_communities",
+  "african_technology",
+  "wider_interests"
 ]);
 
 export function importAccounts(filePath) {
@@ -54,10 +55,10 @@ export function importAccounts(filePath) {
         country,
         segment,
         followers: Math.max(0, Number(row.followers) || 0),
-        following: Math.max(0, Number(row.following) || 0),
-        posts_7d: Math.max(0, Number(row.posts_7d) || 0),
-        replies_7d: Math.max(0, Number(row.replies_7d) || 0),
-        likes_7d: Math.max(0, Number(row.likes_7d) || 0),
+        following: row.following === undefined || row.following === null || row.following === "" ? null : Math.max(0, Number(row.following) || 0),
+        posts_7d: row.posts_7d === undefined || row.posts_7d === null || row.posts_7d === "" ? null : Math.max(0, Number(row.posts_7d) || 0),
+        replies_7d: row.replies_7d === undefined || row.replies_7d === null || row.replies_7d === "" ? null : Math.max(0, Number(row.replies_7d) || 0),
+        likes_7d: row.likes_7d === undefined || row.likes_7d === null || row.likes_7d === "" ? null : Math.max(0, Number(row.likes_7d) || 0),
         bio: String(row.bio || "").slice(0, 500),
         tags: Array.isArray(row.tags) ? row.tags.join(",") : String(row.tags || ""),
         source: String(row.source || "manual-import")
