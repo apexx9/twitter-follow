@@ -193,7 +193,7 @@ try {
       const rows = seedSummary();
       console.log("\nINTERESTS IN YOUR FOLLOWING LIST\n");
       for (const [tag, count] of rows) console.log(`  ${tag}: ${count} profiles`);
-      console.log(\`\nPersonalised Ghana search:\n\${seedSearches()}\n\`);
+      console.log("\nPersonalised Ghana search:\n" + seedSearches() + "\n");
       break;
     }
     case "add": await addAccount(); break;
