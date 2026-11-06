@@ -2,13 +2,12 @@ export const config = {
   databasePath: "./data/ghanaconnect.db",
   followers: { min: 100, max: 2000 },
   activity: { activeWithinDays: 7 },
-  audienceTargets: {
-    ghanaianWomen: 30,
-    nigerianWomen: 10,
-    internationalWomen: 10,
-    ghanaianMen: 35,
-    tech: 10,
-    other: 5
+  discoveryFocus: {
+    Ghana: 45,
+    Nigeria: 15,
+    "African technology": 15,
+    "Creative and lifestyle": 15,
+    "Sports, music and wider interests": 10
   },
   locationPriority: {
     Ghana: 1,
